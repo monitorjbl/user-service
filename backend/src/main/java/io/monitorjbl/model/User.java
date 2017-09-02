@@ -1,13 +1,18 @@
 package io.monitorjbl.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -16,9 +21,22 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   @NotEmpty
+  @Column(nullable = false)
   private String username;
   @NotEmpty
+  @Column(nullable = false)
   private String email;
+  @JsonProperty(access = Access.WRITE_ONLY)
+  @Transient
+  private String password;
+
+  @JsonIgnore
+  @Column(name = "password", nullable = false)
+  private String passwordHash;
+  @JsonIgnore
+  @Column(nullable = false)
+  private String passwordSalt;
+  @Column(nullable = false)
   private ZonedDateTime created;
   private ZonedDateTime updated;
   private ZonedDateTime lastLogin;
@@ -50,11 +68,37 @@ public class User {
   }
 
   public String getEmail() {
-    return email;
+    return Crypter.decrypt(this.email);
   }
 
   public void setEmail(String email) {
-    this.email = email;
+    this.email = Crypter.encrypt(email);
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+    this.passwordSalt = Hasher.newSalt();
+    this.passwordHash = Hasher.hashWithSalt(password, this.passwordSalt);
+  }
+
+  public String getPasswordHash() {
+    return passwordHash;
+  }
+
+  public void setPasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
+  public String getPasswordSalt() {
+    return passwordSalt;
+  }
+
+  public void setPasswordSalt(String passwordSalt) {
+    this.passwordSalt = passwordSalt;
   }
 
   public ZonedDateTime getCreated() {

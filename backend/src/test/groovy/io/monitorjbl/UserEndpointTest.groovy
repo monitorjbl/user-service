@@ -1,26 +1,34 @@
+package io.monitorjbl
+
 import groovyx.net.http.HTTPBuilder
-import io.monitorjbl.Main
 import io.monitorjbl.model.User
-import org.springframework.boot.SpringApplication
 import org.springframework.context.ConfigurableApplicationContext
 import spock.lang.Specification
 
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.DELETE
-import static java.lang.Thread.sleep
 
 class UserEndpointTest extends Specification {
 
   static ConfigurableApplicationContext app
   static int port = 8080
-  static String rootUri = "http://localhost:${port}"
+  static String rootUri
 
   def http = new HTTPBuilder(rootUri)
 
   def setupSpec() {
-    app = SpringApplication.run(Main.class)
-    app.start()
+    // Get unused port
+    def sock = new ServerSocket(0)
+    port = sock.localPort
+    rootUri = "http://localhost:${port}"
+    sock.close()
 
+    // Start app
+    app = Main.start(
+        "--server.port=${port}",
+        "--encryption.key=asdfqwerasdfqwer")
+
+    // Wait for app to start
     for (def i = 0; i < 15; i++) {
       try {
         new Socket("localhost", port).close()
@@ -47,7 +55,7 @@ class UserEndpointTest extends Specification {
 
   def 'User date fields should be ISO8061 formatted strings'() {
     when: 'A user is created'
-    def user = new User(username: 'testuser', email: 'test@gmail.com')
+    def user = new User(username: 'testuser', email: 'test@gmail.com', password: 'password')
     def content
     http.post(path: '/user', body: user, requestContentType: JSON) { resp, json ->
       content = json
@@ -63,7 +71,7 @@ class UserEndpointTest extends Specification {
 
   def 'User list should be pageable'() {
     when: 'Several users are created'
-    def users = (1..10).collect { i -> new User(username: "testuser${i}", email: "test${i}@gmail.com") }
+    def users = (1..10).collect { i -> new User(username: "testuser${i}", email: "test${i}@gmail.com", password: 'password') }
     users.each { user ->
       http.post(path: '/user', body: user, requestContentType: JSON) {}
     }
@@ -94,7 +102,7 @@ class UserEndpointTest extends Specification {
 
   def 'User list should be sortable'() {
     when: 'Several users are created'
-    def users = (1..10).collect { i -> new User(username: "testuser${i}", email: "test${10 - i}@gmail.com") }
+    def users = (1..10).collect { i -> new User(username: "testuser${i}", email: "test${10 - i}@gmail.com", password: 'password') }
     users.each { user ->
       http.post(path: '/user', body: user, requestContentType: JSON) {}
     }
@@ -108,8 +116,8 @@ class UserEndpointTest extends Specification {
       user.name == users[idx].username
     }
 
-    and: 'List endpoint should support sorting by email descending'
-    http.get(path: '/user', requestContentType: JSON, query: [sortField: 'email', sortDirection: 'DESC']) { _, json -> page = json }
+    and: 'List endpoint should support sorting by username descending'
+    http.get(path: '/user', requestContentType: JSON, query: [sortField: 'username', sortDirection: 'DESC']) { _, json -> page = json }
     page.numberOfElements == users.size()
     page.totalPages == 1
     page.content.eachWithIndex { user, idx ->

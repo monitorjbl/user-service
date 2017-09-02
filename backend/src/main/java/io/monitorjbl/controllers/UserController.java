@@ -1,6 +1,7 @@
 package io.monitorjbl.controllers;
 
 import io.monitorjbl.dao.UserDao;
+import io.monitorjbl.exceptions.BadRequestException;
 import io.monitorjbl.exceptions.NotFoundException;
 import io.monitorjbl.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,16 @@ public class UserController {
                          @RequestParam(name = "length", defaultValue = "50") int length,
                          @RequestParam(name = "sortField", defaultValue = "username") String sortField,
                          @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection) {
+
+    //TODO: figure out how to stop sorting on encrypted fields
     return userDao.findAll(new PageRequest(start, length, new Sort(Sort.Direction.fromString(sortDirection), sortField)));
   }
 
   @RequestMapping(method = POST)
   public User create(@RequestBody User user) {
+    if(user.getPassword() == null || user.getPassword().equals("")) {
+      throw new BadRequestException("Password cannot be empty");
+    }
     return userDao.save(user);
   }
 
