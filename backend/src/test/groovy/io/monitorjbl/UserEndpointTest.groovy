@@ -2,55 +2,23 @@ package io.monitorjbl
 
 import groovyx.net.http.HTTPBuilder
 import io.monitorjbl.model.User
-import org.springframework.context.ConfigurableApplicationContext
 import spock.lang.Specification
 
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.DELETE
+import static groovyx.net.http.Method.PUT
+import static io.monitorjbl.IntegrationEnvironment.rootUri
 
 class UserEndpointTest extends Specification {
-
-  static ConfigurableApplicationContext app
-  static int port = 8080
-  static String rootUri
 
   def http = new HTTPBuilder(rootUri)
 
   def setupSpec() {
-    // Get unused port
-    def sock = new ServerSocket(0)
-    port = sock.localPort
-    rootUri = "http://localhost:${port}"
-    sock.close()
-
-    // Start app
-    app = Main.start(
-        "--server.port=${port}",
-        "--encryption.key=asdfqwerasdfqwer")
-
-    // Wait for app to start
-    for (def i = 0; i < 15; i++) {
-      try {
-        new Socket("localhost", port).close()
-        return
-      } catch (e) {
-        sleep(1000)
-      }
-    }
-    throw new RuntimeException("Application did not start up in time")
+    IntegrationEnvironment.start()
   }
 
   def cleanupSpec() {
-    app.close()
-    for (def i = 0; i < 15; i++) {
-      try {
-        new Socket("localhost", port).close()
-        sleep(1000)
-      } catch (e) {
-        return
-      }
-    }
-    throw new RuntimeException("Application did not stop in time")
+    IntegrationEnvironment.stop()
   }
 
   def 'User date fields should be ISO8061 formatted strings'() {
@@ -126,5 +94,23 @@ class UserEndpointTest extends Specification {
 
     cleanup: 'Remove created users'
     users.each { http.request("${rootUri}/user/${it.username}", DELETE, JSON) {} }
+  }
+
+  def 'Updating user fields should be allowed'() {
+    given: 'A created user'
+    def user = new User(username: 'testuser', email: 'test@gmail.com', password: 'password')
+    http.post(path: '/user', body: user, requestContentType: JSON) {}
+
+    when: 'Updating the email field is attempted'
+    user.email = "newemail@who.dis"
+    http.request("${rootUri}/user/${user.username}", PUT, JSON) { body = user }
+
+    then: 'It should succeed'
+    def updatedUser
+    http.get(path: "/user/${user.username}", requestContentType: JSON) { _, json -> updatedUser = json }
+    updatedUser.email == user.email
+
+    cleanup: 'Remove created user'
+    http.request("${rootUri}/user/${user.username}", DELETE, JSON) {}
   }
 }

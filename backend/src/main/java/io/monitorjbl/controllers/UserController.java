@@ -61,7 +61,18 @@ public class UserController {
 
   @RequestMapping(method = PUT, value = "/{username}")
   public User update(@PathVariable("username") String username, @RequestBody User user) {
-    throw new UnsupportedOperationException();
+    //TODO: abstract the copying of these values (maybe with an @Invariant annotation on the entity?)
+    User original = get(username);
+    user.setId(original.getId());
+    user.setCreated(original.getCreated());
+    user.setUsername(username);
+
+    // Preserve password data if the user isn't trying to update it
+    if(user.getPassword() == null) {
+      user.setPasswordHash(original.getPasswordHash());
+      user.setPasswordSalt(original.getPasswordSalt());
+    }
+    return userDao.save(user);
   }
 
   @RequestMapping(method = DELETE, value = "/{username}", consumes = ALL_VALUE)
