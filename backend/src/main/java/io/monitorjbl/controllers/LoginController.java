@@ -37,6 +37,9 @@ public class LoginController {
     if(record == null || !Objects.equals(record.getPasswordHash(), Hasher.hashWithSalt(user.getPassword(), record.getPasswordSalt()))) {
       throw new BadRequestException("Bad credentials");
     }
+
+    record.setLastLogin(ZonedDateTime.now());
+    userDao.save(record);
     return tokenDao.save(new Token(UUID.randomUUID().toString(), ZonedDateTime.now().plusHours(1)));
   }
 }

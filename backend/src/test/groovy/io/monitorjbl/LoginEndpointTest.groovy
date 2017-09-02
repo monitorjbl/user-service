@@ -37,6 +37,12 @@ class LoginEndpointTest extends Specification {
     content.id != null
     content.expires != null
 
+    and: 'The users last login date should be updated'
+    http.get(path: "/user/${user.username}", requestContentType: JSON) { _, json ->
+      json.lastLogin != null
+    }
+
+
     cleanup: 'Remove created user'
     http.request("${rootUri}/user/${user.username}", DELETE, JSON) {}
   }
