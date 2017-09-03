@@ -20,6 +20,8 @@ docker build -t="user-service" .
 docker run -it -p 8080:80 -e ENCRYPTION_KEY=asdfasdfasdfasdf user-service
 ```
 
+The UI will be available at [http://localhost:8080](http://localhost:8080) and the backend will be available at [http://localhost:8080/api](http://localhost:8080/api). You can browse the Swagger docs at [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html).
+
 ## Development
 
 To build this app locally, you will need Maven 3.5+ and Java8+.
@@ -35,7 +37,8 @@ The backend is run separately from the UI, so you will need to start them up ind
 The UI can be started with the following CLI commands, run from the root of the project (you must have run `package` on the ui project at least once to fetch this binary):
 
 ```
-./ui/node/npm run dev
+cd ./ui
+./node/npm run dev
 ```
 
-The UI will be available at [http://localhost:3000/](http://localhost:3000/). Any changes made to the UI code will trigger an automatic reload.
+The UI will be available at [http://localhost:3000](http://localhost:3000). Any changes made to the UI code will trigger an automatic reload.

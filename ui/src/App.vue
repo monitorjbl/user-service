@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <md-toolbar>
-      <h1 class="md-title">Users</h1>
+      <h1 class="md-title">Demo UI</h1>
     </md-toolbar>
 
     <router-view></router-view>

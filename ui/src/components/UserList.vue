@@ -1,30 +1,40 @@
 <template>
   <div>
-    <md-layout md-gutter="20">
-      <md-layout md-flex="25" v-for="user in userList" :key="user.name">
-        <user-card
-            :user="user"
-            :editing="user.editing"
-            :save="save(user)"
-            :remove="remove(user)"
-            :onStopEdit="onStopEdit(user)"/>
+    <md-subheader>Login</md-subheader>
+    <div class="section">
+      <login/>
+    </div>
+
+    <md-subheader>User list</md-subheader>
+    <div class="section">
+      <md-layout md-gutter="20">
+        <md-layout md-flex="25" v-for="user in userList" :key="user.name">
+          <user-card
+              :user="user"
+              :editing="user.editing"
+              :save="save(user)"
+              :remove="remove(user)"
+              :onStopEdit="onStopEdit(user)"/>
+        </md-layout>
+        <md-layout md-flex="25">
+          <div class="new-card" v-on:click="create">
+            <md-icon>add</md-icon>
+          </div>
+        </md-layout>
       </md-layout>
-      <md-layout md-flex="25">
-        <div class="new-card" v-on:click="create">
-          <md-icon>add</md-icon>
-        </div>
-      </md-layout>
-    </md-layout>
+    </div>
   </div>
 </template>
 
 <script>
   import axios from "axios";
   import UserCard from "./UserCard.vue";
+  import Login from "./Login.vue";
 
   export default {
-    components:{
-      UserCard
+    components: {
+      UserCard,
+      Login
     },
     name: 'hello',
     methods: {
@@ -36,7 +46,7 @@
           editing: true
         });
       },
-      onStopEdit: function(user) {
+      onStopEdit: function (user) {
         return (done) => {
           if (!user._saving && user.id === undefined) {
             console.log("Cancelled", user);
@@ -105,5 +115,9 @@
       font-size: 40px;
       font-weight: 700;
     }
+  }
+
+  .section{
+    padding-left: 25px;
   }
 </style>
