@@ -3,6 +3,7 @@ package io.monitorjbl.controllers;
 import io.monitorjbl.dao.TokenDao;
 import io.monitorjbl.dao.UserDao;
 import io.monitorjbl.exceptions.BadRequestException;
+import io.monitorjbl.model.Credentials;
 import io.monitorjbl.model.Hasher;
 import io.monitorjbl.model.Token;
 import io.monitorjbl.model.User;
@@ -36,9 +37,9 @@ public class LoginController {
 
   @ApiOperation(value = "Create a token with user credentials")
   @RequestMapping(method = POST)
-  public Token login(@RequestBody User user) {
-    User record = userDao.getUserByUsername(user.getUsername());
-    if(record == null || !Objects.equals(record.getPasswordHash(), Hasher.hashWithSalt(user.getPassword(), record.getPasswordSalt()))) {
+  public Token login(@RequestBody Credentials credentials) {
+    User record = userDao.getUserByUsername(credentials.getUsername());
+    if(record == null || !Objects.equals(record.getPasswordHash(), Hasher.hashWithSalt(credentials.getPassword(), record.getPasswordSalt()))) {
       throw new BadRequestException("Bad credentials");
     }
 
