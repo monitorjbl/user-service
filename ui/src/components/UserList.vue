@@ -40,7 +40,7 @@
         return (done) => {
           if (!user._saving && user.id === undefined) {
             console.log("Cancelled", user);
-            this.userList = this.userList.filter(u => u._key !== user._id);
+            this.userList = this.userList.filter(u => u._key !== user._key);
           }
           done();
         }
