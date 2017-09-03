@@ -21,13 +21,10 @@
 <script>
   import axios from "axios";
   import UserCard from "./UserCard.vue";
-  import MdIcon from "../../node_modules/vue-material/src/components/mdIcon/mdIcon.vue";
 
   export default {
-    components: {
-      MdIcon,
-      UserCard,
-      axios
+    components:{
+      UserCard
     },
     name: 'hello',
     methods: {
@@ -43,7 +40,7 @@
         return (done) => {
           if (!user._saving && user.id === undefined) {
             console.log("Cancelled", user);
-            this.userList = this.userList.filter(u => u._key !== user._key);
+            this.userList = this.userList.filter(u => u._key !== user._id);
           }
           done();
         }
