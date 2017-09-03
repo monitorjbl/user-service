@@ -31,7 +31,7 @@ class UserEndpointTest extends Specification {
 
     then: 'The returned JSON should include properly formatted ISO8061 dates'
     content.created.getClass() == String
-    content.created =~ /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}(-\d{2}:\d{2}|Z)/
+    content.created =~ /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{1,3}(-\d{2}:\d{2}|Z)/
 
     cleanup: 'Remove created user'
     http.request("${rootUri}/user/${user.username}", DELETE, JSON) {}

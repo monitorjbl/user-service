@@ -1,6 +1,8 @@
+[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=monitorjbl&repoName=user-service&branch=master&pipelineName=user-service&accountName=monitorjbl&type=cf-2)]( https://g.codefresh.io/repositories/monitorjbl/user-service/builds?filter=trigger:build;branch:master;service:59ab851dc3e3230001cecf79~user-service)
+
 # User Service 
 
-A sample app with a REST API and UI using:
+A sample app with a REST API and simple UI using:
 
 * Maven
 * Spring Boot
