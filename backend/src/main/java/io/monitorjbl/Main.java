@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
@@ -21,7 +23,7 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 
 @EnableSwagger2
 @SpringBootApplication
-public class Main {
+public class Main extends WebMvcConfigurerAdapter {
 
   @Value("${encryption.key:archaeoastronomy}")
   private String encryptionKey;
@@ -37,6 +39,12 @@ public class Main {
   @PostConstruct
   public void setEncryptionKey() {
     Crypter.setKey(encryptionKey);
+  }
+
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")
+        .allowedMethods("GET", "POST", "PUT", "DELETE");
   }
 
   @Bean
