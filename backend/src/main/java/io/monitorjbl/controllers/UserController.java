@@ -5,6 +5,7 @@ import io.monitorjbl.exceptions.BadRequestException;
 import io.monitorjbl.exceptions.NotFoundException;
 import io.monitorjbl.model.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
-@Api("Users")
+@Api(value="Users", description = "CRUD operations for users")
 @RestController
 @RequestMapping(value = "/user", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 public class UserController {
@@ -34,6 +35,7 @@ public class UserController {
     this.userDao = userDao;
   }
 
+  @ApiOperation(value = "Get a list of all users in the system (paged API)")
   @RequestMapping(method = GET, consumes = ALL_VALUE)
   public Page<User> list(@RequestParam(name = "start", defaultValue = "0") int start,
                          @RequestParam(name = "length", defaultValue = "50") int length,
@@ -44,14 +46,8 @@ public class UserController {
     return userDao.findAll(new PageRequest(start, length, new Sort(Sort.Direction.fromString(sortDirection), sortField)));
   }
 
-  @RequestMapping(method = POST)
-  public User create(@RequestBody User user) {
-    if(user.getPassword() == null || user.getPassword().equals("")) {
-      throw new BadRequestException("Password cannot be empty");
-    }
-    return userDao.save(user);
-  }
 
+  @ApiOperation(value = "Get a single user by username")
   @RequestMapping(method = GET, value = "/{username}", consumes = ALL_VALUE)
   public User get(@PathVariable("username") String username) {
     User user = userDao.getUserByUsername(username);
@@ -61,6 +57,16 @@ public class UserController {
     return user;
   }
 
+  @ApiOperation(value = "Create a user")
+  @RequestMapping(method = POST)
+  public User create(@RequestBody User user) {
+    if(user.getPassword() == null || user.getPassword().equals("")) {
+      throw new BadRequestException("Password cannot be empty");
+    }
+    return userDao.save(user);
+  }
+
+  @ApiOperation(value = "Update a user")
   @RequestMapping(method = PUT, value = "/{username}")
   public User update(@PathVariable("username") String username, @RequestBody User user) {
     //TODO: abstract the copying of these values (maybe with an @Invariant annotation on the entity?)
@@ -77,6 +83,7 @@ public class UserController {
     return userDao.save(user);
   }
 
+  @ApiOperation(value = "Delete a user")
   @RequestMapping(method = DELETE, value = "/{username}", consumes = ALL_VALUE)
   public void delete(@PathVariable("username") String username) {
     User user = get(username);

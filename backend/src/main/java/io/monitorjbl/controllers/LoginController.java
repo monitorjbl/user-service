@@ -7,6 +7,7 @@ import io.monitorjbl.model.Hasher;
 import io.monitorjbl.model.Token;
 import io.monitorjbl.model.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ import java.util.UUID;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@Api("Login")
+@Api(value = "Login", description = "Authentication service for users")
 @RestController
 @RequestMapping(value = "/login", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 public class LoginController {
@@ -33,6 +34,7 @@ public class LoginController {
     this.tokenDao = tokenDao;
   }
 
+  @ApiOperation(value = "Create a token with user credentials")
   @RequestMapping(method = POST)
   public Token login(@RequestBody User user) {
     User record = userDao.getUserByUsername(user.getUsername());
