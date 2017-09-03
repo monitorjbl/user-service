@@ -20,7 +20,7 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 @SpringBootApplication
 public class Main {
 
-  @Value("${encryption.key}")
+  @Value("${encryption.key:archaeoastronomy}")
   private String encryptionKey;
 
   public static void main(String[] args) {
