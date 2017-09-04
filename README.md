@@ -24,7 +24,7 @@ The UI will be available at [http://localhost:8080](http://localhost:8080) and t
 
 ## Development
 
-To build this app locally, you will need Maven 3.5+ and Java8+.
+To build this app locally, you will need Maven 3.5+ and Java 8+.
 
 ```
 git clone https://github.com/monitorjbl/user-service.git
