@@ -12,6 +12,10 @@ A sample app with a REST API and simple UI using:
 * Vue.js (via npm)
 * Docker
 
+## Data storage
+
+All persistent storage is done with an H2 in-memory database. User passwords are hashed+salted before storage. User emails are treated as sensitive and are encrypted to ensure strong security in the event of a data breach.
+
 ## Building and running  with Docker
 
 ```
