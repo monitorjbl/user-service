@@ -7,8 +7,9 @@ A sample app with a REST API and simple UI using:
 * Maven
 * Spring Boot
 * Spring Data
+* Swagger
 * Spock
-* Vue.js
+* Vue.js (via npm)
 * Docker
 
 ## Building and running  with Docker
