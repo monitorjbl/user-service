@@ -18,7 +18,7 @@
         <form v-on:submit.prevent="doSave">
           <md-input-container>
             <label>Username</label>
-            <md-input v-model="user.username" required></md-input>
+            <md-input v-model="user.username" required :disabled="user.id !== undefined"></md-input>
           </md-input-container>
           <md-input-container>
             <label>Email</label>
@@ -69,7 +69,7 @@
         doSave: () => {
           //TODO: form field validation
           this.user._saving = true;
-          this.save(() => this.stopEdit());
+          this.save(() => this.stopEdit(), () => this.user._saving = false);
         },
         avatarImage: this.user.avatar === undefined ? `http://lorempixel.com/500/200/?&_time=${Math.random()}` : this.user.avatar
       }

@@ -55,19 +55,24 @@
           done();
         }
       },
-      save: (user) => (done) => {
+      save: (user) => (onSuccess, onFailure) => {
         //TODO: Show error messages to user
         if (user.id) {
           console.log("update", user.username);
           axios.put(`${process.env.API_BASE_URI}/user/${user.username}`, user).then(resp => {
-            console.log(resp);
-            done();
+            onSuccess();
+          }).catch(err => {
+            console.log(err);
+            onFailure();
           });
         } else {
           console.log("create", user.username);
           axios.post(`${process.env.API_BASE_URI}/user`, user).then(resp => {
-            console.log(resp);
-            done();
+            user.id = resp.data.id;
+            onSuccess();
+          }).catch(err => {
+            console.log(err);
+            onFailure();
           });
         }
       },
@@ -117,7 +122,7 @@
     }
   }
 
-  .section{
+  .section {
     padding-left: 25px;
   }
 </style>
