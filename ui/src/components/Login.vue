@@ -12,7 +12,7 @@
       <md-layout md-flex="10">
         <md-input-container>
           <label>Password</label>
-          <md-input v-model="creds.password" required></md-input>
+          <md-input type="password" v-model="creds.password" required></md-input>
         </md-input-container>
       </md-layout>
 
