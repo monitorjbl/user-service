@@ -28,6 +28,8 @@ public class Main extends WebMvcConfigurerAdapter {
   @Value("${encryption.key:archaeoastronomy}")
   private String encryptionKey;
 
+  //TODO: support external databases
+  //add dependencies and add to integration test
   public static void main(String[] args) {
     start(args);
   }

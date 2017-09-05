@@ -67,7 +67,6 @@
           this.onStopEdit(() => this.isEditing = false);
         },
         doSave: () => {
-          //TODO: form field validation
           this.user._saving = true;
           this.save(() => this.stopEdit(), () => this.user._saving = false);
         },

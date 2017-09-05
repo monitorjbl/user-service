@@ -1,7 +1,5 @@
 package io.monitorjbl.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +8,6 @@ import java.time.ZonedDateTime;
 @Entity
 public class Token {
   @Id
-  @Autowired
   private String id;
   @Column(nullable = false)
   private ZonedDateTime expires;

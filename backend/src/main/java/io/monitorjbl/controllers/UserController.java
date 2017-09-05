@@ -42,7 +42,8 @@ public class UserController {
                          @RequestParam(name = "sortField", defaultValue = "username") String sortField,
                          @RequestParam(name = "sortDirection", defaultValue = "ASC") String sortDirection) {
 
-    //TODO: figure out how to stop sorting on encrypted fields
+    //TODO: figure out how to stop sorting on encrypted fields.
+    //the db values will not actually be sortable, but Spring Data doesn't know that
     return userDao.findAll(new PageRequest(start, length, new Sort(Sort.Direction.fromString(sortDirection), sortField)));
   }
 
@@ -69,7 +70,10 @@ public class UserController {
   @ApiOperation(value = "Update a user")
   @RequestMapping(method = PUT, value = "/{username}")
   public User update(@PathVariable("username") String username, @RequestBody User user) {
-    //TODO: abstract the copying of these values (maybe with an @Invariant annotation on the entity?)
+    //TODO: abstract the copying of these values
+    //perhaps an @Invariant annotation on the entity? would be good to make this
+    //process reusable as any entity will need to preserve certain fields when
+    //a user submits an update.
     User original = get(username);
     user.setId(original.getId());
     user.setCreated(original.getCreated());

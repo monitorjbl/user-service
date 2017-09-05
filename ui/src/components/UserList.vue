@@ -56,7 +56,7 @@
         }
       },
       save: (user) => (onSuccess, onFailure) => {
-        //TODO: Show error messages to user
+        //TODO: Show error messages to user, preferably in the form of a material toast element
         if (user.id) {
           console.log("update", user.username);
           axios.put(`${process.env.API_BASE_URI}/user/${user.username}`, user).then(resp => {

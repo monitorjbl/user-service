@@ -29,6 +29,13 @@ public class LoginController {
   private final UserDao userDao;
   private final TokenDao tokenDao;
 
+  //TODO: logout endpoint
+  //should remove the supplied token from the db
+
+  //TODO: token cleaner task
+  //should run periodically to remove tokens from the db in order to
+  //prevent tokens from piling up and slowing down queries
+
   @Autowired
   public LoginController(UserDao userDao, TokenDao tokenDao) {
     this.userDao = userDao;
